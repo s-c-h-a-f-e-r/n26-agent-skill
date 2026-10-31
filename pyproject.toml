@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "n26-mcp"
+version = "0.1.0"
+description = "Read-only MCP server for an N26 (or other Enable Banking) account via PSD2"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Justin Schafer" }]
+keywords = ["mcp", "n26", "open-banking", "psd2", "enable-banking"]
+dependencies = [
+  "mcp>=2.0,<3",
+  "pyjwt[crypto]>=2.8",
+  "requests>=2.31",
+]
+
+[project.scripts]
+n26-mcp = "n26_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill"
+Source = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill"
+
+[tool.setuptools]
+py-modules = ["eb"]
+packages = ["n26_mcp"]

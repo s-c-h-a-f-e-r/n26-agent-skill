@@ -67,7 +67,8 @@ class Status(unittest.TestCase):
     def test_cli_exit_code(self):
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, "session.json")
-            json.dump(self.session(5), open(p, "w"))
+            with open(p, "w") as fh:
+                json.dump(self.session(5), fh)
             env = dict(os.environ, EB_SESSION_PATH=p)
             r = subprocess.run([sys.executable, os.path.join(ROOT, "eb.py"), "status"], env=env,
                                capture_output=True, text=True)

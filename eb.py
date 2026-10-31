@@ -3,6 +3,7 @@
 
 Account information (PSD2 AIS) only. There is no payment code in this file.
 Your private key is read from disk to sign API tokens and is never printed.
+The MCP server in n26_mcp/ imports this module; it does not carry a second client.
 
 Config comes from environment variables or an optional config.json next to
 this file (environment wins):
@@ -22,6 +23,24 @@ from urllib.parse import urlparse, parse_qs
 
 API = "https://api.enablebanking.com"
 BASE = os.path.dirname(os.path.abspath(__file__))
+
+
+class EbError(Exception):
+    """Expected failure, such as missing config or an HTTP error.
+
+    The CLI turns this into sys.exit. The MCP server turns it into a tool error.
+    The message is scrubbed so a private key or bearer token cannot leak out.
+    """
+
+    def __init__(self, message):
+        super().__init__(public_error(str(message)))
+
+
+def public_error(message):
+    lowered = message.lower()
+    if any(tok in lowered for tok in ("private key", "begin private", "begin rsa", "bearer ")):
+        return "Enable Banking request failed. The detail was hidden because it looked like key material."
+    return message
 
 
 # ---------------------------------------------------------------- config
@@ -61,7 +80,7 @@ def data_dir():
 def app_id():
     a = cfg("EB_APP_ID")
     if not a:
-        sys.exit("EB_APP_ID is not set. Export it or put it in config.json (see README).")
+        raise EbError("EB_APP_ID is not set. Export it or put it in config.json (see README).")
     return a
 
 
@@ -81,18 +100,19 @@ def headers():
 
 def call(method, path, **kw):
     import requests
+    # Consent setup uses POST /auth and POST /sessions. There is no payment API.
     if method not in ("GET", "POST"):
-        sys.exit("Only GET and POST (consent/session) are used by this read-only client.")
+        raise EbError("Only GET and POST (consent/session) are used by this read-only client.")
     r = requests.request(method, API + path, headers=headers(), timeout=60, **kw)
     if r.status_code != 200:
-        sys.exit(f"Error {r.status_code} on {method} {path}: {r.text}")
+        raise EbError(f"Error {r.status_code} on {method} {path}: {r.text}")
     return r.json()
 
 
 def load_session():
     p = session_path()
     if not os.path.exists(p):
-        sys.exit("No session file. Run: eb.py auth, approve in your bank app, then eb.py session <redirect-url>")
+        raise EbError("No session file. Run: eb.py auth, approve in your bank app, then eb.py session <redirect-url>")
     with open(p) as f:
         return json.load(f)
 
@@ -156,21 +176,93 @@ def cmd_session(a):
     print(f"Saved session ({len(accounts)} account(s)). Consent valid until {(out['access'] or {}).get('valid_until')}.")
 
 
-def pick_accounts(a, s):
-    accs = [x["uid"] for x in s["accounts"]]
-    return [u for u in accs if not a.account or u == a.account]
+def selected_accounts(session, account=None, required=False):
+    """Accounts on the session, optionally one uid. required=True errors when it is missing."""
+    accs = [a for a in (session.get("accounts") or []) if a.get("uid")]
+    if account:
+        accs = [a for a in accs if a.get("uid") == account]
+        if required and not accs:
+            raise EbError(f"No consented account with uid {account!r}. Call list_accounts.")
+    return accs
+
+
+def _last4(acc):
+    return str(acc.get("iban_last4") or "").replace(" ", "")[-4:]
+
+
+def _require_date(label, value):
+    if not value:
+        return
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        raise EbError(f"{label} must be YYYY-MM-DD.") from None
+
+
+def fetch_balances(session, account=None, required=False):
+    """GET balances for each selected account. Read-only."""
+    out = []
+    for acc in selected_accounts(session, account, required=required):
+        uid = acc["uid"]
+        res = call("GET", f"/accounts/{uid}/balances")
+        balances = []
+        for b in res.get("balances") or []:
+            amt = b.get("balance_amount") or {}
+            balances.append({
+                "balance_type": b.get("balance_type"),
+                "amount": amt.get("amount"),
+                "currency": amt.get("currency"),
+                "reference_date": b.get("reference_date") or "",
+            })
+        out.append({
+            "account": uid,
+            "iban_last4": _last4(acc),
+            "currency": acc.get("currency") or "",
+            "balances": balances,
+        })
+    return out
+
+
+def fetch_transactions(session, date_from, date_to=None, account=None, required=False):
+    """GET transactions, following continuation_key until the bank has no more pages."""
+    _require_date("date_from", date_from)
+    _require_date("date_to", date_to)
+    if not date_from:
+        raise EbError("date_from must be YYYY-MM-DD.")
+    out = []
+    for acc in selected_accounts(session, account, required=required):
+        uid = acc["uid"]
+        params = {"date_from": date_from}
+        if date_to:
+            params["date_to"] = date_to
+        raw, pages = [], 0
+        while True:
+            res = call("GET", f"/accounts/{uid}/transactions", params=params)
+            raw.extend(res.get("transactions") or [])
+            pages += 1
+            ck = res.get("continuation_key")
+            if not ck:
+                break
+            if pages >= 100:
+                raise EbError("Stopped after 100 transaction pages.")
+            params["continuation_key"] = ck
+        out.append({
+            "account": uid,
+            "iban_last4": _last4(acc),
+            "pages": pages,
+            "transactions": [flat(t) for t in raw],
+            "raw": raw,
+        })
+    return out
 
 
 # ---------------------------------------------------------------- commands: read
 
 def cmd_balances(a):
-    s = load_session()
-    for uid in pick_accounts(a, s):
-        res = call("GET", f"/accounts/{uid}/balances")
-        print(f"Account {uid[:8]}:")
-        for b in res.get("balances", []):
-            amt = b.get("balance_amount", {})
-            print(f"  {b.get('balance_type')}: {amt.get('amount')} {amt.get('currency')}  ({b.get('reference_date') or ''})")
+    for block in fetch_balances(load_session(), a.account):
+        print(f"Account {block['account'][:8]}:")
+        for b in block["balances"]:
+            print(f"  {b.get('balance_type')}: {b.get('amount')} {b.get('currency')}  ({b.get('reference_date') or ''})")
 
 
 def flat(t):
@@ -189,31 +281,21 @@ def flat(t):
 
 
 def cmd_transactions(a):
-    s = load_session()
+    blocks = fetch_transactions(load_session(), a.date_from, a.date_to, a.account)
     d = data_dir()
     os.makedirs(d, exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    for uid in pick_accounts(a, s):
-        params = {"date_from": a.date_from}
-        if a.date_to:
-            params["date_to"] = a.date_to
-        txs, pages = [], 0
-        while True:
-            res = call("GET", f"/accounts/{uid}/transactions", params=params)
-            txs += res.get("transactions", [])
-            pages += 1
-            ck = res.get("continuation_key")
-            if not ck:
-                break
-            params["continuation_key"] = ck
+    for block in blocks:
+        uid = block["account"]
+        txs = block["raw"]
         base = os.path.join(d, f"tx_{uid[:8]}_{a.date_from}_{stamp}")
         with open(base + ".json", "w") as f:
             json.dump(txs, f, indent=2, ensure_ascii=False)
         with open(base + ".csv", "w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(flat({}).keys()))
             w.writeheader()
-            w.writerows(flat(t) for t in txs)
-        print(f"Account {uid[:8]}: {len(txs)} transactions, {pages} page(s)\n  {base}.json\n  {base}.csv")
+            w.writerows(block["transactions"])
+        print(f"Account {uid[:8]}: {len(txs)} transactions, {block['pages']} page(s)\n  {base}.json\n  {base}.csv")
 
 
 # ---------------------------------------------------------------- status
@@ -278,28 +360,19 @@ def _num(x):
         return None
 
 
-def load_transactions(paths):
-    """Accept raw Enable Banking JSON or the flat CSV this tool writes. Returns normalised rows."""
+def rows_from_flat(items):
+    """Normalise flat transaction dicts (flat() or the CSV) into detector rows."""
     rows = []
-    for p in paths:
-        if p.endswith(".json"):
-            with open(p) as f:
-                raw = json.load(f)
-            raw = raw.get("transactions", raw) if isinstance(raw, dict) else raw
-            items = [flat(t) for t in raw]
-        else:
-            with open(p, newline="") as f:
-                items = list(csv.DictReader(f))
-        for t in items:
-            amt = _num(t.get("amount"))
-            d = t.get("booking_date") or t.get("value_date")
-            if amt is None or not d:
-                continue
-            debit = t.get("direction") == "DBIT" or amt < 0
-            payee = (t.get("creditor") if debit else t.get("debtor")) or t.get("remittance") or ""
-            rows.append({"date": date.fromisoformat(d[:10]), "amount": abs(amt), "debit": debit,
-                         "currency": t.get("currency") or "", "payee": payee.strip(),
-                         "key": norm_payee(payee), "id": t.get("entry_reference") or t.get("transaction_id")})
+    for t in items:
+        amt = _num(t.get("amount"))
+        d = t.get("booking_date") or t.get("value_date")
+        if amt is None or not d:
+            continue
+        debit = t.get("direction") == "DBIT" or amt < 0
+        payee = (t.get("creditor") if debit else t.get("debtor")) or t.get("remittance") or ""
+        rows.append({"date": date.fromisoformat(d[:10]), "amount": abs(amt), "debit": debit,
+                     "currency": t.get("currency") or "", "payee": payee.strip(),
+                     "key": norm_payee(payee), "id": t.get("entry_reference") or t.get("transaction_id")})
     seen, out = set(), []
     for r in rows:  # de-duplicate overlapping exports
         k = (r["id"], r["date"], r["amount"]) if r["id"] else (r["key"], r["date"], r["amount"], len(out))
@@ -307,6 +380,21 @@ def load_transactions(paths):
             seen.add(k)
             out.append(r)
     return out
+
+
+def load_transactions(paths):
+    """Accept raw Enable Banking JSON or the flat CSV this tool writes. Returns normalised rows."""
+    items = []
+    for p in paths:
+        if p.endswith(".json"):
+            with open(p) as f:
+                raw = json.load(f)
+            raw = raw.get("transactions", raw) if isinstance(raw, dict) else raw
+            items.extend(flat(t) for t in raw)
+        else:
+            with open(p, newline="") as f:
+                items.extend(csv.DictReader(f))
+    return rows_from_flat(items)
 
 
 def _add_months(d, n, dom):
@@ -406,6 +494,57 @@ def detect_recurring(rows, today=None, include_credits=False, min_count=3, max_c
             "currency": (out_active[0]["currency"] if out_active else ""), "as_of": today.isoformat()}
 
 
+def month_bounds(month):
+    """'YYYY-MM' -> (first day, last day) as ISO dates."""
+    if not re.fullmatch(r"\d{4}-\d{2}", month or ""):
+        raise EbError("month must be YYYY-MM.")
+    try:
+        start = date.fromisoformat(month + "-01")
+    except ValueError:
+        raise EbError("month must be YYYY-MM.") from None
+    if start.month == 12:
+        end = date(start.year + 1, 1, 1) - timedelta(days=1)
+    else:
+        end = date(start.year, start.month + 1, 1) - timedelta(days=1)
+    return start.isoformat(), end.isoformat()
+
+
+def summarise_month(flat_txs, month):
+    """Totals for one calendar month from flat transaction dicts. Read-only."""
+    month_bounds(month)
+    total_out = total_in = 0.0
+    count = 0
+    currency = ""
+    by_payee = defaultdict(float)
+    for t in flat_txs:
+        booked = (t.get("booking_date") or t.get("value_date") or "")[:7]
+        if booked != month:
+            continue
+        amt = _num(t.get("amount"))
+        if amt is None:
+            continue
+        count += 1
+        currency = currency or (t.get("currency") or "")
+        debit = t.get("direction") == "DBIT" or (t.get("direction") != "CRDT" and amt < 0)
+        abs_amt = abs(amt)
+        if debit:
+            total_out += abs_amt
+            payee = ((t.get("creditor") or t.get("remittance") or "(unknown)") or "").strip() or "(unknown)"
+            by_payee[payee] += abs_amt
+        else:
+            total_in += abs_amt
+    top = sorted(by_payee.items(), key=lambda kv: (-kv[1], kv[0]))[:8]
+    return {
+        "month": month,
+        "transaction_count": count,
+        "total_out": round(total_out, 2),
+        "total_in": round(total_in, 2),
+        "net": round(total_in - total_out, 2),
+        "currency": currency,
+        "top_outflows": [{"payee": payee, "amount": round(amount, 2)} for payee, amount in top],
+    }
+
+
 def _latest_inputs():
     d = data_dir()
     if not os.path.isdir(d):
@@ -460,7 +599,10 @@ def main():
     x.add_argument("--min-count", type=int, default=3); x.add_argument("--today", help="YYYY-MM-DD, for testing")
     x.set_defaults(f=cmd_recurring)
     a = p.parse_args()
-    a.f(a)
+    try:
+        a.f(a)
+    except EbError as exc:
+        sys.exit(str(exc))
 
 
 if __name__ == "__main__":
