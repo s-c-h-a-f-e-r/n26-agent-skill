@@ -44,7 +44,9 @@ class McpTools(unittest.IsolatedAsyncioTestCase):
         with open(self.session_path, "w") as f:
             json.dump(_session(120), f)
         self._prev_session = os.environ.get("EB_SESSION_PATH")
+        self._prev_cache = os.environ.get("EB_CACHE")
         os.environ["EB_SESSION_PATH"] = self.session_path
+        os.environ["EB_CACHE"] = "0"
         self.http = []
         self.txs = _sample_transactions()
         self.patcher = patch("eb.call", side_effect=self._fake_call)
@@ -56,6 +58,10 @@ class McpTools(unittest.IsolatedAsyncioTestCase):
             os.environ.pop("EB_SESSION_PATH", None)
         else:
             os.environ["EB_SESSION_PATH"] = self._prev_session
+        if self._prev_cache is None:
+            os.environ.pop("EB_CACHE", None)
+        else:
+            os.environ["EB_CACHE"] = self._prev_cache
         self.tmp.cleanup()
 
     def _fake_call(self, method, path, **kw):
@@ -148,15 +154,18 @@ class McpTools(unittest.IsolatedAsyncioTestCase):
                 "date_from": "2024-01-01",
                 "date_to": "2026-10-31",
                 "account": ACCOUNT,
+                "limit": 200,
             })
         self.assertFalse(result.is_error, result.content)
         body = result.structured_content
         block = body["accounts"][0]
         self.assertEqual(block["pages"], 2)
-        self.assertEqual(block["count"], len(self.txs))
+        self.assertEqual(block["matched"], len(self.txs))
+        self.assertEqual(block["returned"], len(self.txs))
+        self.assertFalse(block["truncated"])
         self.assertEqual(
-            [t["entry_reference"] for t in block["transactions"]],
-            [t["entry_reference"] for t in self.txs],
+            {t["entry_reference"] for t in block["transactions"]},
+            {t["entry_reference"] for t in self.txs},
         )
         tx_calls = [c for c in self.http if c["path"].endswith("/transactions")]
         self.assertEqual(len(tx_calls), 2)
@@ -166,6 +175,34 @@ class McpTools(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(tx_calls[1]["params"]["continuation_key"], "p2")
         self.assertEqual(tx_calls[1]["params"]["date_from"], "2024-01-01")
         self.assertIn("owner", body["owner_only"].lower())
+
+    async def test_get_transactions_defaults_to_newest_page_and_can_search(self):
+        async with Client(self._server()) as client:
+            default = await client.call_tool("get_transactions", {"date_from": "2024-01-01", "account": ACCOUNT})
+            searched = await client.call_tool("get_transactions", {
+                "date_from": "2024-01-01", "account": ACCOUNT, "search": "streamco",
+            })
+            first = await client.call_tool("get_transactions", {
+                "date_from": "2024-01-01", "account": ACCOUNT, "limit": 10, "offset": 0,
+            })
+            second = await client.call_tool("get_transactions", {
+                "date_from": "2024-01-01", "account": ACCOUNT, "limit": 10, "offset": 10,
+            })
+        self.assertFalse(default.is_error, default.content)
+        page = default.structured_content["accounts"][0]
+        self.assertEqual(page["limit"], 50)
+        self.assertEqual(page["returned"], 50)
+        self.assertGreater(page["matched"], 50)
+        self.assertTrue(page["truncated"])
+        dates = [t["booking_date"] for t in page["transactions"]]
+        self.assertEqual(dates, sorted(dates, reverse=True))
+        hits = searched.structured_content["accounts"][0]
+        self.assertGreater(hits["matched"], 0)
+        self.assertTrue(all("streamco" in (t["creditor"] or "").lower() for t in hits["transactions"]))
+        a = {t["entry_reference"] for t in first.structured_content["accounts"][0]["transactions"]}
+        b = {t["entry_reference"] for t in second.structured_content["accounts"][0]["transactions"]}
+        self.assertEqual(len(a), 10)
+        self.assertTrue(a.isdisjoint(b))
 
     async def test_recurring_charges_reuse_the_detector(self):
         expected = eb.detect_recurring(

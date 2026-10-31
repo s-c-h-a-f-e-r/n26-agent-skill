@@ -4,13 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "n26-mcp"
-version = "0.1.0"
-description = "Read-only MCP server for an N26 (or other Enable Banking) account via PSD2"
+version = "0.2.0"
+description = "Read-only MCP server for your own N26 account via PSD2 (Enable Banking). No password, no payment code."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Justin Schafer" }]
-keywords = ["mcp", "n26", "open-banking", "psd2", "enable-banking"]
+keywords = ["mcp", "n26", "psd2", "open-banking", "enable-banking", "ai-agents", "model-context-protocol"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Office/Business :: Financial",
+]
 dependencies = [
   "mcp>=2.0,<3",
   "pyjwt[crypto]>=2.8",
@@ -19,11 +32,17 @@ dependencies = [
 
 [project.scripts]
 n26-mcp = "n26_mcp.server:main"
+n26-eb = "eb:main"
 
 [project.urls]
 Homepage = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill"
+Repository = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill"
+Issues = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill/issues"
 Source = "https://github.com/s-c-h-a-f-e-r/n26-agent-skill"
 
 [tool.setuptools]
 py-modules = ["eb"]
 packages = ["n26_mcp"]
+
+[tool.setuptools.package-data]
+n26_mcp = ["demo_transactions.json"]

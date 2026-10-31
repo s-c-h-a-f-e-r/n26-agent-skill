@@ -1,0 +1,9 @@
+include README.md LICENSE eb.py pyproject.toml
+recursive-include n26_mcp *.py *.json
+global-exclude *.pyc
+global-exclude __pycache__/*
+prune tests
+prune docs
+prune scripts
+prune sample
+prune .github

@@ -1,110 +1,101 @@
-# n26-agent-skill
+# n26-mcp
 
-Give your AI agent **read-only** access to your N26 account (or most other EU banks) through PSD2 open banking. A Python CLI and a small stdio MCP server. No payment code.
+**N26 has no AI API, and with PSD2 you don't need one.** A tiny read-only MCP lets your agent read your own N26 account: you approve once in the N26 app, the agent never gets your password, and there is no payment code. MIT.
 
-- `eb.py`: an Enable Banking client: consent, balances, transactions, plus offline `recurring` (subscription finder) and `status` (consent expiry).
-- `n26-mcp`: the same client behind a Model Context Protocol server, for Claude Desktop, Claude Code, Cursor and any other MCP client.
-- `SKILL.md`: an agent skill (AgentSkills format: Grok Bot, Claude skills, OpenClaw) telling the agent when and how to use it, the renewal routine, and the safety rules.
+![Demo on synthetic data: an agent listing recurring charges](docs/demo.gif)
 
-There is **no payment code** in this repo. The consent it asks for covers balances and transactions only.
+*Demo data, not a real account. Rendered from `n26-eb demo` on a made-up fixture (Example Hausverwaltung, StreamCo, a weekly veggie box). No bank was contacted, and this is not a recording of a live chat.*
 
-## Why PSD2 via Enable Banking, not an unofficial N26 API
+Your transactions are sent to whichever AI model or client you connect. Read-only means this server cannot move money. It does not mean the conversation stays on your machine.
+
+- `n26-mcp`: stdio MCP server for Claude Desktop, Claude Code, Cursor and any other MCP client. It imports `eb.py`. It does not contain a second client.
+- `n26-eb`: the same client as a CLI, including `connect` (bank consent) and `demo` (the fixture above).
+- `SKILL.md`: an agent skill (Grok Bot, Claude skills, OpenClaw) for when to use it, and the safety rules.
+
+There is **no payment code** in this repo. The consent covers balances and transactions only. A recurring series needs 3 charges (2 for quarterly or yearly). It will miss a yearly bill that has only happened once, and it is not a list of every subscription.
+
+## vs bankmcp
+
+[noskillish/bankmcp](https://github.com/noskillish/bankmcp) is the broader Enable Banking MCP: more banks, more tools, a hosted connector. Use that if you want the larger surface.
+
+This one is small and exercised against N26. The part worth having is the EU rule. PSD2 lets you give an agent legal read access to your own account through a licensed account-information provider (Enable Banking), without the bank shipping an AI API, without your password, and without scraping a private API. You approve in the N26 app. The process runs on your machine. There is no payment code in it.
+
 | | This (PSD2 AIS via Enable Banking) | Unofficial N26 API / scrapers |
 |---|---|---|
-| Legal basis | EU PSD2 account information service through a licensed provider | Reverse-engineered private API |
-| Your password | Never shared: you approve in your bank app | Agent needs your login and 2FA |
-| Bank terms | Sanctioned route | Breaks N26's terms, can get you locked out |
-| Access | Read-only, time-boxed (max 180 days), revocable | Whatever your login can do |
-| Stability | Standard API across 2,000+ banks | Breaks when the app changes |
+| Legal basis | EU PSD2 account information through a licensed provider | Reverse-engineered private API |
+| Your password | Never shared: you approve in the N26 app | The client needs your login and 2FA |
+| Bank terms | The sanctioned route | Breaks N26's terms and can get the account locked |
+| Access | Read-only, time-boxed (max 180 days), revocable | Whatever the login can do |
+| Where it runs | On your machine | Depends on the scraper |
 
 ## What it costs
-Enable Banking's restricted production mode is free when you link your own accounts for personal, non-commercial use. Every user creates **their own** Enable Banking application. Never share an app ID plus key.
 
-## Setup (about 15 minutes)
+Enable Banking's restricted production mode is free when you link your own accounts for personal, non-commercial use. The Control Panel and the API under those terms are free of charge. Every user creates **their own** Enable Banking application. Never share an app ID plus key. It is a tool for someone who will be their own developer, not a consumer app you can hand to someone else.
+
+## Setup (about 25 minutes)
+
+Python 3.10+.
+
 1. **Install**
    ```bash
-   git clone <this repo> && cd n26-agent-skill
-   python3 -m venv .venv && . .venv/bin/activate    # Python 3.10+
-   pip install -e .                                 # CLI and the n26-mcp command
+   git clone https://github.com/s-c-h-a-f-e-r/n26-agent-skill && cd n26-agent-skill
+   python3 -m venv .venv && . .venv/bin/activate
+   pip install -e .
    ```
-2. **Create your Enable Banking app**
-   1. Sign up at https://enablebanking.com and open the Control Panel.
-   2. Go to **API applications** > register a new application. Environment: **Production**. Redirect URL: `https://enablebanking.com/`. Use: personal.
-   3. Download the private key (`.pem`) and note the **application ID**.
-   4. Activate it by linking your own account in the Control Panel (restricted mode).
-3. **Configure**
+   Or, without a checkout: `uvx --from git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill n26-eb --help`
+2. **Create the Enable Banking app.** Sign up at https://enablebanking.com and open the Control Panel, then **API applications**, new application. The form asks for a description, a privacy-policy URL, a terms-of-service URL and a data-protection email. Restricted mode does not check those URLs, but you should use addresses you control. Environment: **Production**. Redirect URL: `https://enablebanking.com/`. Use: personal.
+3. Download the private key (`.pem`) and note the application ID.
+4. **First N26 approval.** In the Control Panel, activate the app by linking your own account. That is you approving read access inside N26. Restricted mode only returns data for accounts you have linked. Business use and other people's accounts are out of scope.
+5. **Put the key where the installed command can see it.** A checkout looks next to `eb.py`. An install via pip, pipx or uvx looks in `~/.config/n26-mcp` (or `$XDG_CONFIG_HOME/n26-mcp`).
    ```bash
-   mkdir -p keys && mv ~/Downloads/<your-key>.pem keys/private.pem && chmod 600 keys/private.pem
-   export EB_APP_ID=<your-application-id>     # or copy config.example.json to config.json
-   # other banks: export EB_BANK="Revolut" EB_COUNTRY=DE
+   mkdir -p ~/.config/n26-mcp/keys
+   mv ~/Downloads/<your-key>.pem ~/.config/n26-mcp/keys/private.pem
+   chmod 600 ~/.config/n26-mcp/keys/private.pem
+   export EB_APP_ID=<your-application-id>
+   # a checkout can instead use keys/private.pem and config.json, see config.example.json
+   # another bank: export EB_BANK="Revolut" EB_COUNTRY=DE
    ```
-4. **Check**
+6. **Check the key, then the second N26 approval.**
    ```bash
-   python3 eb.py application   # key and app ID work
-   python3 eb.py aspsps        # your bank is listed
+   n26-eb application          # key and app ID work
+   n26-eb aspsps               # N26 is listed
+   n26-eb connect              # prints a link; approve in the N26 app; paste the redirect URL
    ```
-5. **Connect your bank**
-   ```bash
-   python3 eb.py auth          # prints a link: open it, approve in your bank app
-   python3 eb.py session 'https://enablebanking.com/?state=...&code=...'   # the URL you landed on
-   ```
-6. **Use it**
-   ```bash
-   python3 eb.py balances
-   python3 eb.py transactions --from 2026-01-01
-   python3 eb.py recurring           # or --json
-   python3 eb.py status              # exit 2 within 14 days of expiry, 3 when expired
-   ```
-7. **Give it to your agent**: copy or symlink this folder into your agent's skills directory (it reads `SKILL.md`). Hand the app ID and key to the agent as secrets, never in chat.
+   `connect` is `auth` plus `session`. If you are not at a terminal, it prints the link and you finish with `n26-eb session '<the URL you landed on>'`.
+7. **Point your MCP client at it** with absolute paths (snippets below). Balances and transactions are cached for the UTC day under `~/.cache/n26-mcp`.
 
-### Example `recurring` output (synthetic sample)
-```
-$ python3 eb.py recurring --input sample/transactions.json --today 2026-10-31
-payee                        cadence  typical  range          count  last        next        per_month  status
-Example Hausverwaltung GmbH  monthly  940.00   940.00-940.00  8      2026-10-01  2026-11-01  940.00     active
-Veggie Box Weekly            weekly   18.50    18.50-18.50    26     2026-10-24  2026-10-31  80.44      active
-StreamCo Europe B.V.         monthly  12.99    12.99-12.99    7      2026-10-03  2026-11-03  12.99      active
-PhoneCo Mobile               monthly  9.99     9.99-9.99      6      2026-10-20  2026-11-20  9.99       active
-Moon Magazine                lunar    4.99     4.99-4.99      8      2026-10-25  2026-11-24  5.14       active
-DomainHost.com               yearly   15.00    15.00-15.00    2      2025-11-12  2026-11-12  1.25       active
-Fit Club Berlin              monthly  29.90    29.90-29.90    4      2026-07-10  2026-08-10  29.90      lapsed?
+`python eb.py …` still works from a checkout. The installed command is `n26-eb`.
 
-Active recurring outflow, monthly equivalent: 1049.81 EUR
+## Rate limits
+
+N26, like many banks under PSD2, allows about **4 unattended balance or transaction fetches per account per day**. Enable Banking treats a call as unattended when it has no [PSU headers](https://enablebanking.com/docs/faq/) (the headers that say a person is at the keyboard). The next one comes back as **HTTP 429**, often `ASPSP_RATE_LIMIT_EXCEEDED`, for about 6 hours.
+
+This client stores each account and date range for the UTC day, mode `0600`, so a chat that asks for a balance, then spending, then subscriptions does not call the bank again. A 429 falls back to the last cached copy when there is one, and the tool says so. `EB_CACHE=0` skips the cache.
+
+When **you** are the one asking, set both of these so the call is marked online. Sending only one of them makes Enable Banking return 422, so neither is sent unless both are set:
+
+```bash
+export EB_PSU_IP=<your current IP>
+export EB_PSU_USER_AGENT='<the user agent of the browser you are using>'
 ```
-How it works: transactions are grouped by normalised payee; same-day charges merge, different price points split; the gap between charges is matched to weekly, lunar (~29.5 days, drifting day of month), monthly (same day of month), quarterly or yearly; the median amount gives the typical charge and the monthly equivalent; a charge more than a few days overdue is marked `lapsed?`.
+
+A cron job or other schedule must set `EB_PSU_PRESENT=0` so it does not pretend you are online. Do not poll more than about 4 times a day.
 
 ## MCP server
 
-`n26-mcp` speaks MCP over **stdio**. It uses the official MCP Python SDK (`mcp` 2.x). In that SDK the high-level server class is `MCPServer`, which replaced `FastMCP`. Claude Desktop, Claude Code, Cursor and other MCP clients start it as a local process.
+stdio. Claude Desktop, Claude Code and Cursor start it as a local process. Every tool is marked read-only (`readOnlyHint`). There is no payment tool and no consent tool on the server. Connecting the bank stays on `n26-eb connect`, because you approve that in the N26 app.
 
-The server imports `eb.py`. It does not contain a second client, and it has **no payment or consent-initiation tool**. Connecting and renewing the bank stays on the CLI (`auth`, then `session`), because you approve that in your bank app. The tools do not write transaction files; they return data to the client. Config is the same as the CLI: environment variables win, then `config.json`. In an MCP client, set the variables in the server config and use **absolute paths** for the key and the session file.
-
-Every tool is marked read-only (`readOnlyHint`). Balances, transactions and payees are for **you** only. Do not add this server to a shared workspace where other people can see tool output.
+`get_transactions` follows pagination, then returns the **newest 50** matching rows (200 maximum). Narrow it with `date_from`, `date_to`, `search` (payee or remittance text) and `offset`. For a summary, use `recurring_charges` or the resource `n26://spending/YYYY-MM` instead of asking for every row.
 
 | Tool | What the model gets |
 |---|---|
 | `list_accounts` | Consented accounts: uid, currency, last 4 IBAN characters. Local session only. |
-| `get_balances` | Balance type, amount, currency, reference date. |
-| `get_transactions` | Flat transactions for a date range. Continuation pages are followed inside the tool. |
-| `recurring_charges` | The same detector as `eb.py recurring`: cadence, typical amount, next expected date, monthly equivalent, `lapsed?`. |
+| `get_balances` | Balance type, amount, currency, reference date. Cached for the day. |
+| `get_transactions` | Newest rows in a date range, with `search`, `limit` and `offset`. |
+| `recurring_charges` | Cadence, typical amount, next expected date, monthly equivalent, and `lapsed?` when a series has stopped. Needs enough repeats. |
 | `consent_status` | Expiry, days left, and a warning. `remote: true` also asks Enable Banking for the session status. |
 
-There is also a prompt, `monthly_spending_summary`, and a resource `n26://spending/YYYY-MM` with that month's totals. Neither can move money.
-
-### Run it
-
-```bash
-n26-mcp                         # after pip install -e . or pipx install
-python3 -m n26_mcp
-
-# uv, with no separate install step. Use a local checkout, or git once this is on the default branch.
-uvx --from /absolute/path/to/n26-agent-skill n26-mcp
-uvx --from git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill n26-mcp
-
-pipx install /absolute/path/to/n26-agent-skill
-```
-
-Finish `eb.py auth` and `eb.py session` before expecting balances. The server only reads.
+There is a prompt, `monthly_spending_summary`. Show balances and payees only to yourself.
 
 ### Claude Desktop
 
@@ -115,11 +106,13 @@ Finish `eb.py auth` and `eb.py session` before expecting balances. The server on
   "mcpServers": {
     "n26": {
       "command": "uvx",
-      "args": ["--from", "/absolute/path/to/n26-agent-skill", "n26-mcp"],
+      "args": ["--from", "git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill", "n26-mcp"],
       "env": {
         "EB_APP_ID": "your-application-id",
-        "EB_KEY_PATH": "/absolute/path/to/keys/private.pem",
+        "EB_KEY_PATH": "/absolute/path/to/private.pem",
         "EB_SESSION_PATH": "/absolute/path/to/session.json",
+        "EB_PSU_IP": "your-ip",
+        "EB_PSU_USER_AGENT": "your-browser-user-agent",
         "EB_BANK": "N26",
         "EB_COUNTRY": "DE"
       }
@@ -135,17 +128,17 @@ Finish `eb.py auth` and `eb.py session` before expecting balances. The server on
 ```bash
 claude mcp add \
   --env EB_APP_ID=your-application-id \
-  --env EB_KEY_PATH=/absolute/path/to/keys/private.pem \
+  --env EB_KEY_PATH=/absolute/path/to/private.pem \
   --env EB_SESSION_PATH=/absolute/path/to/session.json \
   --env EB_BANK=N26 \
   --env EB_COUNTRY=DE \
   --transport stdio n26 \
-  -- uvx --from /absolute/path/to/n26-agent-skill n26-mcp
+  -- uvx --from git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill n26-mcp
 ```
 
 ### Cursor
 
-Project file `.cursor/mcp.json`, or `~/.cursor/mcp.json` for every project. `${env:NAME}` keeps the secret out of the file. Put the real values in your environment, not in git.
+`.cursor/mcp.json` in the project, or `~/.cursor/mcp.json` for every project. `${env:NAME}` keeps the secret out of the file.
 
 ```json
 {
@@ -153,7 +146,7 @@ Project file `.cursor/mcp.json`, or `~/.cursor/mcp.json` for every project. `${e
     "n26": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["--from", "/absolute/path/to/n26-agent-skill", "n26-mcp"],
+      "args": ["--from", "git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill", "n26-mcp"],
       "env": {
         "EB_APP_ID": "${env:EB_APP_ID}",
         "EB_KEY_PATH": "${env:EB_KEY_PATH}",
@@ -166,29 +159,57 @@ Project file `.cursor/mcp.json`, or `~/.cursor/mcp.json` for every project. `${e
 }
 ```
 
-A `python -m` form, after `pip install -e /absolute/path/to/n26-agent-skill`, is the same block with `"command": "python3"` and `"args": ["-m", "n26_mcp"]`.
+After `pip install -e .`, the same block can use `"command": "n26-mcp"` and no `args`. `python3 -m n26_mcp` works too.
 
 ## Consent renewal
-N26 consents last at most 180 days. Run `eb.py status` from a weekly routine (cron, or your agent's scheduler); when it exits 2, run `auth` + `session` again. PSD2 caps unattended refreshes at about 4 a day.
+
+N26 consents last at most 180 days. Run `n26-eb status` weekly. Exit 0 means it is fine, exit 2 means it expires within 14 days, exit 3 means it has expired. Renew with `n26-eb connect`. The 4-a-day cap above still applies. The status check itself does not fetch transactions.
 
 ## Privacy
-- Keys, `config.json`, `session.json` and `data/` are gitignored. Keep it that way.
-- Your agent should show balances and transactions only to you, never in shared channels (see `SKILL.md`). The MCP tools repeat that on every result. Do not point a shared Cursor or Claude project at this server if other people can read its output.
+
+- Keys, `config.json`, `session.json`, `data/` and the cache are not for git. The cache is outside the repo, under `~/.cache/n26-mcp`.
+- Show balances, transactions and payees only to yourself, never in a shared channel (`SKILL.md`). Do not add this server to a shared Cursor or Claude project if other people can read tool output.
+- Your transactions are sent to whichever AI model or client you connect.
 
 ## Tests
+
 ```bash
-python3 -m unittest discover -s tests     # offline, uses sample/transactions.json and a mocked Enable Banking API
-python3 tests/make_sample.py              # regenerate the synthetic sample
+python3 -m unittest discover -s tests     # offline; sample/transactions.json and a mocked API
+python3 tests/make_sample.py              # regenerate the synthetic sample and the bundled fixture
+python3 scripts/make_demo_gif.py          # regenerate docs/demo.gif from that fixture
 ```
 
-GitHub Actions runs that suite on Python 3.10–3.13 (`.github/workflows/tests.yml`).
+GitHub Actions runs the suite on Python 3.10–3.13 and checks that the package builds (`.github/workflows/tests.yml`).
+
+## Publishing
+
+The PyPI name to claim is `n26-mcp`. Nothing in this repo uploads it.
+
+```bash
+python -m pip install build twine
+python -m build
+twine check dist/*
+# twine upload dist/*    # only when you mean to publish
+```
+
+`.github/workflows/release.yml` publishes to PyPI when a GitHub Release is published, via trusted publishing. It does not run on pull requests. Create the PyPI project and the GitHub `pypi` environment first.
+
+Until then:
+
+```bash
+uvx --from git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill n26-mcp
+pipx install git+https://github.com/s-c-h-a-f-e-r/n26-agent-skill
+```
 
 ## Credits
-- [noskillish/bankmcp](https://github.com/noskillish/bankmcp): the leading Enable Banking MCP server. Want more banks, features and surface area? Use that. This repo is the small, N26-tested, read-only, PSD2-licensed route: one client, a CLI and a stdio MCP server, and no unofficial N26 API.
-- [Enable Banking API samples](https://github.com/enablebanking/enablebanking-api-samples), on which the client is based.
+
+- [noskillish/bankmcp](https://github.com/noskillish/bankmcp): the leading Enable Banking MCP. This repo is the small, N26-tested, read-only one.
+- [Enable Banking API samples](https://github.com/enablebanking/enablebanking-api-samples), which the client is based on.
 
 ## Disclaimer
+
 Not affiliated with N26 or Enable Banking. Not financial advice. Check your bank's and Enable Banking's terms before connecting.
 
 ## License
+
 MIT, see [LICENSE](LICENSE).

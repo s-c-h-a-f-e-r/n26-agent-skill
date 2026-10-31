@@ -56,4 +56,7 @@ TX.sort(key=lambda t: t["booking_date"], reverse=True)
 out = os.path.join(os.path.dirname(__file__), "..", "sample", "transactions.json")
 with open(out, "w") as f:
     json.dump(TX, f, indent=1)
+bundled = os.path.join(os.path.dirname(__file__), "..", "n26_mcp", "demo_transactions.json")
+with open(bundled, "w") as f:
+    json.dump(TX, f, indent=1)
 print(f"{len(TX)} transactions -> {os.path.normpath(out)}")

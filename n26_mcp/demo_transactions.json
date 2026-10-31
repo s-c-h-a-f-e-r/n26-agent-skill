@@ -1,0 +1,2432 @@
+[
+ {
+  "entry_reference": "sample-0134",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-10-27",
+  "value_date": "2026-10-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0127",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "90.38"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-26",
+  "value_date": "2026-10-26",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0067",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-25",
+  "value_date": "2026-10-25",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0059",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-24",
+  "value_date": "2026-10-24",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0126",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "28.83"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-21",
+  "value_date": "2026-10-21",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0032",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-20",
+  "value_date": "2026-10-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0125",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "17.73"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-18",
+  "value_date": "2026-10-18",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0058",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-17",
+  "value_date": "2026-10-17",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0124",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "60.11"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-17",
+  "value_date": "2026-10-17",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0123",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "90.95"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-16",
+  "value_date": "2026-10-16",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0122",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.53"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-11",
+  "value_date": "2026-10-11",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0057",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-10",
+  "value_date": "2026-10-10",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0121",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "52.17"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-09",
+  "value_date": "2026-10-09",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0006",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-03",
+  "value_date": "2026-10-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0056",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-03",
+  "value_date": "2026-10-03",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0120",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "83.74"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-03",
+  "value_date": "2026-10-03",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0119",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "74.29"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-02",
+  "value_date": "2026-10-02",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0021",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-01",
+  "value_date": "2026-10-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0022",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-10-01",
+  "value_date": "2026-10-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0118",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "84.20"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-27",
+  "value_date": "2026-09-27",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0133",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-09-27",
+  "value_date": "2026-09-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0055",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-26",
+  "value_date": "2026-09-26",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0066",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-25",
+  "value_date": "2026-09-25",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0117",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "21.76"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-21",
+  "value_date": "2026-09-21",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0031",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-20",
+  "value_date": "2026-09-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0054",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-19",
+  "value_date": "2026-09-19",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0116",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "37.60"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-17",
+  "value_date": "2026-09-17",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0053",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-12",
+  "value_date": "2026-09-12",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0115",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "84.98"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-11",
+  "value_date": "2026-09-11",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0052",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-05",
+  "value_date": "2026-09-05",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0114",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "67.18"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-05",
+  "value_date": "2026-09-05",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0113",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.87"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-04",
+  "value_date": "2026-09-04",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0005",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-03",
+  "value_date": "2026-09-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0019",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-01",
+  "value_date": "2026-09-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0020",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-09-01",
+  "value_date": "2026-09-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0112",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "41.20"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-30",
+  "value_date": "2026-08-30",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0051",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-29",
+  "value_date": "2026-08-29",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0065",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-27",
+  "value_date": "2026-08-27",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0132",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-08-27",
+  "value_date": "2026-08-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0111",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "44.73"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-26",
+  "value_date": "2026-08-26",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0050",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-22",
+  "value_date": "2026-08-22",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0030",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-20",
+  "value_date": "2026-08-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0110",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "21.30"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-20",
+  "value_date": "2026-08-20",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0109",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "50.94"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-19",
+  "value_date": "2026-08-19",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0049",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-15",
+  "value_date": "2026-08-15",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0108",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "27.08"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-14",
+  "value_date": "2026-08-14",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0107",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "86.11"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-11",
+  "value_date": "2026-08-11",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0048",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-08",
+  "value_date": "2026-08-08",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0106",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "30.86"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-07",
+  "value_date": "2026-08-07",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0004",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-03",
+  "value_date": "2026-08-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0033",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "49.00"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-02",
+  "value_date": "2026-08-02",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0105",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.46"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-02",
+  "value_date": "2026-08-02",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0017",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-01",
+  "value_date": "2026-08-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0018",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-01",
+  "value_date": "2026-08-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0047",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-08-01",
+  "value_date": "2026-08-01",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0104",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "47.92"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-31",
+  "value_date": "2026-07-31",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0064",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-28",
+  "value_date": "2026-07-28",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0131",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-07-27",
+  "value_date": "2026-07-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0046",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-25",
+  "value_date": "2026-07-25",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0103",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "65.02"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-25",
+  "value_date": "2026-07-25",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0102",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "84.24"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-23",
+  "value_date": "2026-07-23",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0029",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-20",
+  "value_date": "2026-07-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0045",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-18",
+  "value_date": "2026-07-18",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0101",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "31.29"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-18",
+  "value_date": "2026-07-18",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0100",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "79.50"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-14",
+  "value_date": "2026-07-14",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0099",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "81.33"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-12",
+  "value_date": "2026-07-12",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0044",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-11",
+  "value_date": "2026-07-11",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0026",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.90"
+  },
+  "creditor": {
+   "name": "Fit Club Berlin"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-10",
+  "value_date": "2026-07-10",
+  "remittance_information": [
+   "Fit Club Berlin"
+  ]
+ },
+ {
+  "entry_reference": "sample-0098",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "56.45"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-09",
+  "value_date": "2026-07-09",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0043",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-04",
+  "value_date": "2026-07-04",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0003",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-03",
+  "value_date": "2026-07-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0097",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "94.09"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-03",
+  "value_date": "2026-07-03",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0015",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-01",
+  "value_date": "2026-07-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0016",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-07-01",
+  "value_date": "2026-07-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0096",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "22.22"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-30",
+  "value_date": "2026-06-30",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0063",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-29",
+  "value_date": "2026-06-29",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0095",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "22.89"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-28",
+  "value_date": "2026-06-28",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0042",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-27",
+  "value_date": "2026-06-27",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0130",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-06-27",
+  "value_date": "2026-06-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0094",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "64.38"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-22",
+  "value_date": "2026-06-22",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0028",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-20",
+  "value_date": "2026-06-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0041",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-20",
+  "value_date": "2026-06-20",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0093",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "66.31"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-16",
+  "value_date": "2026-06-16",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0092",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "22.15"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-14",
+  "value_date": "2026-06-14",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0040",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-13",
+  "value_date": "2026-06-13",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0091",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "32.18"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-11",
+  "value_date": "2026-06-11",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0025",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.90"
+  },
+  "creditor": {
+   "name": "Fit Club Berlin"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-10",
+  "value_date": "2026-06-10",
+  "remittance_information": [
+   "Fit Club Berlin"
+  ]
+ },
+ {
+  "entry_reference": "sample-0090",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "82.41"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-07",
+  "value_date": "2026-06-07",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0039",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-06",
+  "value_date": "2026-06-06",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0089",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "65.53"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-06",
+  "value_date": "2026-06-06",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0088",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "24.73"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-05",
+  "value_date": "2026-06-05",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0002",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-03",
+  "value_date": "2026-06-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0013",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-01",
+  "value_date": "2026-06-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0014",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-06-01",
+  "value_date": "2026-06-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0087",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "85.03"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-31",
+  "value_date": "2026-05-31",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0038",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-30",
+  "value_date": "2026-05-30",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0062",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-30",
+  "value_date": "2026-05-30",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0129",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-05-27",
+  "value_date": "2026-05-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0086",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "56.03"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-26",
+  "value_date": "2026-05-26",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0085",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "54.65"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-25",
+  "value_date": "2026-05-25",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0037",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-23",
+  "value_date": "2026-05-23",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0084",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "78.22"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-21",
+  "value_date": "2026-05-21",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0027",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "9.99"
+  },
+  "creditor": {
+   "name": "PhoneCo Mobile"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-20",
+  "value_date": "2026-05-20",
+  "remittance_information": [
+   "PhoneCo Mobile"
+  ]
+ },
+ {
+  "entry_reference": "sample-0083",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "81.73"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-18",
+  "value_date": "2026-05-18",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0036",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-16",
+  "value_date": "2026-05-16",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0082",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "16.07"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-15",
+  "value_date": "2026-05-15",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0081",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "21.53"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-14",
+  "value_date": "2026-05-14",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0080",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "68.74"
+  },
+  "creditor": {
+   "name": "Bakery Example"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-11",
+  "value_date": "2026-05-11",
+  "remittance_information": [
+   "Bakery Example"
+  ]
+ },
+ {
+  "entry_reference": "sample-0024",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.90"
+  },
+  "creditor": {
+   "name": "Fit Club Berlin"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-10",
+  "value_date": "2026-05-10",
+  "remittance_information": [
+   "Fit Club Berlin"
+  ]
+ },
+ {
+  "entry_reference": "sample-0035",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-09",
+  "value_date": "2026-05-09",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0079",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "78.42"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-09",
+  "value_date": "2026-05-09",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0078",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "27.18"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-06",
+  "value_date": "2026-05-06",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0001",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-03",
+  "value_date": "2026-05-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0034",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "18.50"
+  },
+  "creditor": {
+   "name": "Veggie Box Weekly"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-02",
+  "value_date": "2026-05-02",
+  "remittance_information": [
+   "Veggie Box Weekly"
+  ]
+ },
+ {
+  "entry_reference": "sample-0077",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "64.54"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-02",
+  "value_date": "2026-05-02",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0011",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-01",
+  "value_date": "2026-05-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0012",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-01",
+  "value_date": "2026-05-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0061",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-05-01",
+  "value_date": "2026-05-01",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0128",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "3200.00"
+  },
+  "creditor": null,
+  "debtor": {
+   "name": "Example Employer GmbH"
+  },
+  "credit_debit_indicator": "CRDT",
+  "status": "BOOK",
+  "booking_date": "2026-04-27",
+  "value_date": "2026-04-27",
+  "remittance_information": [
+   "Example Employer GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0076",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "10.31"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-26",
+  "value_date": "2026-04-26",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0075",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "27.02"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-21",
+  "value_date": "2026-04-21",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0074",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "44.71"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-20",
+  "value_date": "2026-04-20",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0073",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "85.62"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-15",
+  "value_date": "2026-04-15",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0023",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "29.90"
+  },
+  "creditor": {
+   "name": "Fit Club Berlin"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-10",
+  "value_date": "2026-04-10",
+  "remittance_information": [
+   "Fit Club Berlin"
+  ]
+ },
+ {
+  "entry_reference": "sample-0072",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "72.07"
+  },
+  "creditor": {
+   "name": "Cafe Sample"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-09",
+  "value_date": "2026-04-09",
+  "remittance_information": [
+   "Cafe Sample"
+  ]
+ },
+ {
+  "entry_reference": "sample-0071",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "31.93"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-07",
+  "value_date": "2026-04-07",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0000",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "12.99"
+  },
+  "creditor": {
+   "name": "StreamCo Europe B.V."
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-03",
+  "value_date": "2026-04-03",
+  "remittance_information": [
+   "StreamCo Europe B.V."
+  ]
+ },
+ {
+  "entry_reference": "sample-0009",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-01",
+  "value_date": "2026-04-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0010",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-01",
+  "value_date": "2026-04-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0060",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "4.99"
+  },
+  "creditor": {
+   "name": "Moon Magazine"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-01",
+  "value_date": "2026-04-01",
+  "remittance_information": [
+   "Moon Magazine"
+  ]
+ },
+ {
+  "entry_reference": "sample-0070",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "63.63"
+  },
+  "creditor": {
+   "name": "Corner Market"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-04-01",
+  "value_date": "2026-04-01",
+  "remittance_information": [
+   "Corner Market"
+  ]
+ },
+ {
+  "entry_reference": "sample-0007",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "900.00"
+  },
+  "creditor": {
+   "name": "Example Hausverwaltung GmbH"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-03-01",
+  "value_date": "2026-03-01",
+  "remittance_information": [
+   "Example Hausverwaltung GmbH"
+  ]
+ },
+ {
+  "entry_reference": "sample-0008",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "40.00"
+  },
+  "creditor": {
+   "name": "EXAMPLE HAUSVERWALTUNG"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2026-03-01",
+  "value_date": "2026-03-01",
+  "remittance_information": [
+   "EXAMPLE HAUSVERWALTUNG"
+  ]
+ },
+ {
+  "entry_reference": "sample-0068",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "15.00"
+  },
+  "creditor": {
+   "name": "DomainHost.com"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2025-11-12",
+  "value_date": "2025-11-12",
+  "remittance_information": [
+   "DomainHost.com"
+  ]
+ },
+ {
+  "entry_reference": "sample-0069",
+  "transaction_amount": {
+   "currency": "EUR",
+   "amount": "15.00"
+  },
+  "creditor": {
+   "name": "DOMAINHOST"
+  },
+  "debtor": null,
+  "credit_debit_indicator": "DBIT",
+  "status": "BOOK",
+  "booking_date": "2024-11-12",
+  "value_date": "2024-11-12",
+  "remittance_information": [
+   "DOMAINHOST"
+  ]
+ }
+]
