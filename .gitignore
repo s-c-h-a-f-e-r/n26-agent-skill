@@ -1,0 +1,13 @@
+# secrets and personal data: never commit
+keys/
+*.pem
+*.key
+config.json
+session.json
+data/
+*.csv
+!sample/*.csv
+.env
+.venv/
+__pycache__/
+*.pyc

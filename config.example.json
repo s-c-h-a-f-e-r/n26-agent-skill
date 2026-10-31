@@ -1,0 +1,7 @@
+{
+  "EB_APP_ID": "00000000-0000-0000-0000-000000000000",
+  "EB_KEY_PATH": "keys/private.pem",
+  "EB_BANK": "N26",
+  "EB_COUNTRY": "DE",
+  "EB_REDIRECT_URL": "https://enablebanking.com/"
+}
