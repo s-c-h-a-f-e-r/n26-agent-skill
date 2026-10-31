@@ -8,21 +8,38 @@ The MCP server in n26_mcp/ imports this module; it does not carry a second clien
 Config comes from environment variables or an optional config.json next to
 this file (environment wins):
 
-  EB_APP_ID        your Enable Banking application ID (required for API calls)
-  EB_KEY_PATH      path to your application's private key   (default keys/private.pem)
-  EB_BANK          bank (ASPSP) name                          (default N26)
-  EB_COUNTRY       bank country code                          (default DE)
-  EB_REDIRECT_URL  redirect URL registered on your app        (default https://enablebanking.com/)
-  EB_SESSION_PATH  where the session file lives               (default session.json)
-  EB_DATA_DIR      where transactions are written             (default data/)
+  EB_APP_ID            your Enable Banking application ID (required for API calls)
+  EB_KEY_PATH          path to your application's private key   (default keys/private.pem)
+  EB_BANK              bank (ASPSP) name                        (default N26)
+  EB_COUNTRY           bank country code                        (default DE)
+  EB_REDIRECT_URL      redirect URL registered on your app      (default https://enablebanking.com/)
+  EB_SESSION_PATH      where the session file lives             (default session.json)
+  EB_DATA_DIR          where transactions are written           (default data/)
+  EB_CACHE_DIR         daily response cache                     (default ~/.cache/n26-mcp)
+  EB_CACHE             set to 0 to skip the cache
+  EB_PSU_IP            your IP, sent only together with the user agent
+  EB_PSU_USER_AGENT    your browser user agent, when you are the one asking
+  EB_PSU_PRESENT       set to 0 for a scheduled job so no PSU headers are sent
+
+An installed copy (pip, uvx, pipx) keeps the key and session under ~/.config/n26-mcp.
+`n26-eb connect` walks through bank consent. `n26-eb demo` answers from made-up data.
 """
-import argparse, csv, json, os, re, statistics, sys, uuid
+import argparse, csv, hashlib, json, os, re, statistics, sys, uuid
 from collections import defaultdict
 from datetime import date, datetime, timezone, timedelta
 from urllib.parse import urlparse, parse_qs
 
 API = "https://api.enablebanking.com"
 BASE = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TX_LIMIT = 50
+MAX_TX_LIMIT = 200
+RATE_LIMIT_MESSAGE = (
+    "HTTP 429: the bank refused another fetch (rate limit, often ASPSP_RATE_LIMIT_EXCEEDED). "
+    "Unattended balance and transaction calls are limited to about 4 per account per day. "
+    "Wait about 6 hours. A fetch already stored for today is reused from the local cache "
+    "and is not requested again. If you are the one asking, set EB_PSU_IP and EB_PSU_USER_AGENT "
+    "so the call is marked as you being present. A scheduled job should set EB_PSU_PRESENT=0."
+)
 
 
 class EbError(Exception):
@@ -45,8 +62,32 @@ def public_error(message):
 
 # ---------------------------------------------------------------- config
 
+def _installed_copy():
+    return "site-packages" in BASE or "dist-packages" in BASE
+
+
+def app_home():
+    """Where config, the key and the session live.
+
+    A checkout keeps them next to eb.py. pip/uvx installs this file under
+    site-packages, so those copies use ~/.config/n26-mcp instead.
+    """
+    if not _installed_copy():
+        return BASE
+    override = os.environ.get("EB_HOME")
+    if override:
+        path = override
+    else:
+        xdg = os.environ.get("XDG_CONFIG_HOME")
+        root = xdg if xdg else os.path.join(os.path.expanduser("~"), ".config")
+        path = os.path.join(root, "n26-mcp")
+    os.makedirs(path, exist_ok=True)
+    os.chmod(path, 0o700)
+    return path
+
+
 def _file_config():
-    p = os.path.join(BASE, "config.json")
+    p = os.path.join(app_home(), "config.json")
     if os.path.exists(p):
         with open(p) as f:
             return {k.upper(): v for k, v in json.load(f).items()}
@@ -62,7 +103,7 @@ def cfg(key, default=None):
 
 def _path(key, default):
     p = cfg(key, default)
-    return p if os.path.isabs(p) else os.path.join(BASE, p)
+    return p if os.path.isabs(p) else os.path.join(app_home(), p)
 
 
 def key_path():
@@ -98,21 +139,62 @@ def headers():
     return {"Authorization": f"Bearer {token}"}
 
 
-def call(method, path, **kw):
+def user_present():
+    """True when a person is driving this call, so PSU headers may be sent."""
+    return os.environ.get("EB_PSU_PRESENT", "1").strip().lower() not in ("0", "false", "no", "off")
+
+
+def psu_headers():
+    """End-user headers for balance and transaction calls.
+
+    Enable Banking wants every required PSU header or none of them. Sending only
+    one produces 422 PSU_HEADER_NOT_PROVIDED, so this returns nothing unless both
+    the IP and the User-Agent are configured.
+    """
+    ip = (cfg("EB_PSU_IP") or cfg("EB_PSU_IP_ADDRESS") or "").strip()
+    ua = (cfg("EB_PSU_USER_AGENT") or "").strip()
+    if not ip or not ua:
+        return {}
+    out = {"Psu-Ip-Address": ip, "Psu-User-Agent": ua}
+    for env, header in (
+        ("EB_PSU_REFERER", "Psu-Referer"),
+        ("EB_PSU_ACCEPT", "Psu-Accept"),
+        ("EB_PSU_ACCEPT_CHARSET", "Psu-Accept-Charset"),
+        ("EB_PSU_ACCEPT_ENCODING", "Psu-Accept-Encoding"),
+        ("EB_PSU_ACCEPT_LANGUAGE", "Psu-Accept-Language"),
+        ("EB_PSU_GEO_LOCATION", "Psu-Geo-Location"),
+    ):
+        val = (cfg(env) or "").strip()
+        if val:
+            out[header] = val
+    return out
+
+
+def call(method, path, *, online=False, **kw):
     import requests
     # Consent setup uses POST /auth and POST /sessions. There is no payment API.
     if method not in ("GET", "POST"):
         raise EbError("Only GET and POST (consent/session) are used by this read-only client.")
-    r = requests.request(method, API + path, headers=headers(), timeout=60, **kw)
+    hdrs = headers()
+    # PSU headers are only defined on the account-information GETs, and only when
+    # the person is actually driving the call.
+    if online and user_present() and method == "GET":
+        hdrs.update(psu_headers())
+    r = requests.request(method, API + path, headers=hdrs, timeout=60, **kw)
+    if r.status_code == 429:
+        raise EbError(RATE_LIMIT_MESSAGE)
     if r.status_code != 200:
-        raise EbError(f"Error {r.status_code} on {method} {path}: {r.text}")
+        detail = (r.text or "").strip().replace("\n", " ")
+        if len(detail) > 180:
+            detail = detail[:180] + "..."
+        raise EbError(f"Error {r.status_code} on {method} {path}: {detail}")
     return r.json()
 
 
 def load_session():
     p = session_path()
     if not os.path.exists(p):
-        raise EbError("No session file. Run: eb.py auth, approve in your bank app, then eb.py session <redirect-url>")
+        raise EbError("No session file. Run `n26-eb connect` (or `eb.py auth`, then `eb.py session <redirect-url>`).")
     with open(p) as f:
         return json.load(f)
 
@@ -148,7 +230,7 @@ def cmd_auth(a):
     res = call("POST", "/auth", json=body)
     print(f"valid_until: {valid_until}")
     print(f"Open this link, log in to your bank and approve read access:\n{res['url']}")
-    print("Then run: eb.py session '<the full URL you were redirected to>'")
+    print("Then run: n26-eb session '<the full URL you were redirected to>'")
 
 
 def cmd_session(a):
@@ -199,60 +281,143 @@ def _require_date(label, value):
         raise EbError(f"{label} must be YYYY-MM-DD.") from None
 
 
+def cache_enabled():
+    return os.environ.get("EB_CACHE", "1").strip().lower() not in ("0", "false", "no", "off")
+
+
+def cache_dir():
+    """Daily response cache. Defaults to ~/.cache/n26-mcp, mode 0700."""
+    override = os.environ.get("EB_CACHE_DIR")
+    if override:
+        path = override
+    else:
+        base = os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache")
+        path = os.path.join(base, "n26-mcp")
+    os.makedirs(path, exist_ok=True)
+    os.chmod(path, 0o700)
+    return path
+
+
+def _cache_path(kind, account, extra):
+    blob = json.dumps({"kind": kind, "account": account, "extra": extra}, sort_keys=True, separators=(",", ":"))
+    digest = hashlib.sha256(blob.encode()).hexdigest()
+    return os.path.join(cache_dir(), digest + ".json")
+
+
+def cache_lookup(kind, account, extra):
+    if not cache_enabled():
+        return None
+    path = _cache_path(kind, account, extra)
+    if not os.path.isfile(path):
+        return None
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    today = datetime.now(timezone.utc).date().isoformat()
+    return {"fresh": data.get("fetched_on") == today, "fetched_on": data.get("fetched_on"), "value": data.get("value")}
+
+
+def cache_store(kind, account, extra, value):
+    if not cache_enabled():
+        return
+    path = _cache_path(kind, account, extra)
+    payload = {"fetched_on": datetime.now(timezone.utc).date().isoformat(), "value": value}
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump(payload, f)
+    os.chmod(path, 0o600)
+
+
+def _cached(kind, account, extra, live):
+    """Return today's cached value, or call live() and store it.
+
+    On HTTP 429, a copy from an earlier day is returned with a notice instead of failing empty.
+    """
+    hit = cache_lookup(kind, account, extra)
+    if hit and hit["fresh"] and hit.get("value") is not None:
+        return hit["value"]
+    try:
+        value = live()
+    except EbError as exc:
+        if hit and hit.get("value") is not None and str(exc).startswith("HTTP 429"):
+            stale = dict(hit["value"])
+            stale["notice"] = f"{exc} Showing the cached copy from {hit.get('fetched_on')}."
+            return stale
+        raise
+    cache_store(kind, account, extra, value)
+    return value
+
+
+def _balance_block(acc, res):
+    uid = acc["uid"]
+    balances = []
+    for b in res.get("balances") or []:
+        amt = b.get("balance_amount") or {}
+        balances.append({
+            "balance_type": b.get("balance_type"),
+            "amount": amt.get("amount"),
+            "currency": amt.get("currency"),
+            "reference_date": b.get("reference_date") or "",
+        })
+    return {"account": uid, "iban_last4": _last4(acc), "currency": acc.get("currency") or "", "balances": balances}
+
+
 def fetch_balances(session, account=None, required=False):
-    """GET balances for each selected account. Read-only."""
+    """GET balances for each selected account. Read-only. Cached for the UTC day."""
     out = []
     for acc in selected_accounts(session, account, required=required):
         uid = acc["uid"]
-        res = call("GET", f"/accounts/{uid}/balances")
-        balances = []
-        for b in res.get("balances") or []:
-            amt = b.get("balance_amount") or {}
-            balances.append({
-                "balance_type": b.get("balance_type"),
-                "amount": amt.get("amount"),
-                "currency": amt.get("currency"),
-                "reference_date": b.get("reference_date") or "",
-            })
-        out.append({
-            "account": uid,
-            "iban_last4": _last4(acc),
-            "currency": acc.get("currency") or "",
-            "balances": balances,
-        })
+
+        def live(acc=acc, uid=uid):
+            res = call("GET", f"/accounts/{uid}/balances", online=True)
+            return _balance_block(acc, res)
+
+        out.append(_cached("balances", uid, {}, live))
     return out
 
 
+def _transaction_block(acc, date_from, date_to):
+    uid = acc["uid"]
+    params = {"date_from": date_from}
+    if date_to:
+        params["date_to"] = date_to
+    raw, pages = [], 0
+    while True:
+        res = call("GET", f"/accounts/{uid}/transactions", params=params, online=True)
+        raw.extend(res.get("transactions") or [])
+        pages += 1
+        ck = res.get("continuation_key")
+        if not ck:
+            break
+        if pages >= 100:
+            raise EbError("Stopped after 100 transaction pages.")
+        params["continuation_key"] = ck
+    return {
+        "account": uid,
+        "iban_last4": _last4(acc),
+        "pages": pages,
+        "transactions": [flat(t) for t in raw],
+        "raw": raw,
+    }
+
+
 def fetch_transactions(session, date_from, date_to=None, account=None, required=False):
-    """GET transactions, following continuation_key until the bank has no more pages."""
+    """GET transactions, following continuation_key. One live fetch per account and range per UTC day."""
     _require_date("date_from", date_from)
     _require_date("date_to", date_to)
     if not date_from:
         raise EbError("date_from must be YYYY-MM-DD.")
+    extra = {"date_from": date_from, "date_to": date_to or ""}
     out = []
     for acc in selected_accounts(session, account, required=required):
         uid = acc["uid"]
-        params = {"date_from": date_from}
-        if date_to:
-            params["date_to"] = date_to
-        raw, pages = [], 0
-        while True:
-            res = call("GET", f"/accounts/{uid}/transactions", params=params)
-            raw.extend(res.get("transactions") or [])
-            pages += 1
-            ck = res.get("continuation_key")
-            if not ck:
-                break
-            if pages >= 100:
-                raise EbError("Stopped after 100 transaction pages.")
-            params["continuation_key"] = ck
-        out.append({
-            "account": uid,
-            "iban_last4": _last4(acc),
-            "pages": pages,
-            "transactions": [flat(t) for t in raw],
-            "raw": raw,
-        })
+
+        def live(acc=acc, uid=uid):
+            return _transaction_block(acc, date_from, date_to)
+
+        out.append(_cached("transactions", uid, extra, live))
     return out
 
 
@@ -280,21 +445,68 @@ def flat(t):
     }
 
 
+def select_transactions(rows, search=None, limit=DEFAULT_TX_LIMIT, offset=0):
+    """Newest matching rows, for a model context that cannot take a full year.
+
+    limit is capped at MAX_TX_LIMIT. Date bounds are applied by the fetch, not here.
+    """
+    matched = list(rows)
+    needle = (search or "").strip().casefold()
+    if needle:
+        def hit(row):
+            parts = (row.get("creditor"), row.get("debtor"), row.get("remittance"), row.get("bank_code"))
+            return needle in " ".join(str(p or "") for p in parts).casefold()
+        matched = [row for row in matched if hit(row)]
+    ordered = sorted(matched, key=lambda row: ((row.get("booking_date") or ""), (row.get("entry_reference") or "")), reverse=True)
+    try:
+        limit_n = int(limit)
+        offset_n = int(offset)
+    except (TypeError, ValueError):
+        raise EbError("limit and offset must be integers.") from None
+    if limit_n < 1:
+        raise EbError("limit must be at least 1.")
+    if offset_n < 0:
+        raise EbError("offset must be at least 0.")
+    capped = min(limit_n, MAX_TX_LIMIT)
+    page = ordered[offset_n:offset_n + capped]
+    return {
+        "transactions": page,
+        "matched": len(ordered),
+        "returned": len(page),
+        "offset": offset_n,
+        "limit": capped,
+        "truncated": offset_n + len(page) < len(ordered),
+    }
+
+
+def _write_private(path, write, binary=False):
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "wb" if binary else "w", newline="" if not binary else None) as f:
+        write(f)
+    os.chmod(path, 0o600)
+
+
 def cmd_transactions(a):
     blocks = fetch_transactions(load_session(), a.date_from, a.date_to, a.account)
     d = data_dir()
     os.makedirs(d, exist_ok=True)
+    os.chmod(d, 0o700)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     for block in blocks:
         uid = block["account"]
         txs = block["raw"]
         base = os.path.join(d, f"tx_{uid[:8]}_{a.date_from}_{stamp}")
-        with open(base + ".json", "w") as f:
+
+        def write_json(f, txs=txs):
             json.dump(txs, f, indent=2, ensure_ascii=False)
-        with open(base + ".csv", "w", newline="") as f:
+
+        def write_csv(f, rows=block["transactions"]):
             w = csv.DictWriter(f, fieldnames=list(flat({}).keys()))
             w.writeheader()
-            w.writerows(block["transactions"])
+            w.writerows(rows)
+
+        _write_private(base + ".json", write_json)
+        _write_private(base + ".csv", write_csv)
         print(f"Account {uid[:8]}: {len(txs)} transactions, {block['pages']} page(s)\n  {base}.json\n  {base}.csv")
 
 
@@ -574,6 +786,51 @@ def cmd_recurring(a):
     print(f"\nActive recurring outflow, monthly equivalent: {res['monthly_total_out']:.2f} {res['currency']}")
 
 
+def demo_fixture():
+    """Synthetic transactions shipped for `n26-eb demo`. Never a real account."""
+    repo = os.path.join(BASE, "sample", "transactions.json")
+    if os.path.isfile(repo):
+        return repo
+    try:
+        import n26_mcp
+        bundled = os.path.join(os.path.dirname(n26_mcp.__file__), "demo_transactions.json")
+    except ImportError:
+        bundled = ""
+    if bundled and os.path.isfile(bundled):
+        return bundled
+    raise EbError("Demo fixture is missing. It is sample/transactions.json in the repository.")
+
+
+def cmd_connect(a):
+    """Print the bank consent link, then save the session from the redirect URL."""
+    print("Read-only consent for balances and transactions. This cannot move money.")
+    print("The first time, N26 asks twice: once when you link the account in the Enable Banking Control Panel, and once at the link below.")
+    cmd_auth(argparse.Namespace(days=a.days))
+    if not sys.stdin.isatty():
+        print("When you have the redirect URL, run: n26-eb session '<url>'")
+        return
+    url = input("Paste the full redirect URL you landed on: ").strip()
+    if not url:
+        raise EbError("Empty redirect URL. Run `n26-eb session '<url>'` when you have it.")
+    cmd_session(argparse.Namespace(code=url))
+
+
+def cmd_demo(a):
+    """Answer 'what recurring charges do I have?' from the synthetic fixture. No network."""
+    path = a.input or demo_fixture()
+    today = date.fromisoformat(a.today) if a.today else date(2026, 10, 31)
+    res = detect_recurring(load_transactions([path]), today=today)
+    print("DEMO DATA. Not a real bank account. Merchants and amounts are made up. No bank was contacted.")
+    print("\nYou asked: what recurring charges do I have?\n")
+    if not res["items"]:
+        print("Nothing in the fixture repeated often enough to call it recurring.")
+    for item in res["items"]:
+        mark = " (lapsed?)" if item["status"] != "active" else ""
+        print(f"  {item['payee']}: {item['cadence']}, typical {item['typical_amount']:.2f} {item['currency']}, next {item['next_expected']}{mark}")
+    print(f"\nActive recurring outflow, monthly equivalent: {res['monthly_total_out']:.2f} {res['currency']}")
+    print("A series needs 3 charges (2 for quarterly or yearly). This is not a list of every subscription.")
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -586,6 +843,12 @@ def main():
     x.add_argument("--days", type=int, default=180); x.set_defaults(f=cmd_auth)
     x = sp.add_parser("session", help="finish consent with the redirect URL")
     x.add_argument("code", help="code, or the full redirect URL"); x.set_defaults(f=cmd_session)
+    x = sp.add_parser("connect", help="walk through bank consent: print the link, then save the session")
+    x.add_argument("--days", type=int, default=180); x.set_defaults(f=cmd_connect)
+    x = sp.add_parser("demo", help="recurring charges from the synthetic fixture (no bank, no network)")
+    x.add_argument("--input", help="transaction JSON (default: bundled synthetic sample)")
+    x.add_argument("--today", default="2026-10-31", help="YYYY-MM-DD")
+    x.set_defaults(f=cmd_demo)
     x = sp.add_parser("balances"); x.add_argument("--account"); x.set_defaults(f=cmd_balances)
     x = sp.add_parser("transactions"); x.add_argument("--from", dest="date_from", required=True)
     x.add_argument("--to", dest="date_to"); x.add_argument("--account"); x.set_defaults(f=cmd_transactions)

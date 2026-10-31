@@ -31,7 +31,11 @@ INSTRUCTIONS = (
     "(or another bank reached through Enable Banking). There is no payment tool "
     "and no way to move money. Show balances, transactions, payees and account "
     "identifiers only to the account owner, in a private chat. Never ask for a "
-    "bank password, and never reveal the private key, application id or session file."
+    "bank password, and never reveal the private key, application id or session file. "
+    "get_transactions returns at most 50 rows by default (200 maximum); narrow it with "
+    "search, offset and dates, or use recurring_charges and the monthly spending resource "
+    "for a summary. Balance and transaction fetches are cached for the UTC day. "
+    "Unattended bank fetches are limited to about 4 per account per day."
 )
 
 
@@ -82,6 +86,7 @@ class AccountBalances(BaseModel):
     account: str
     iban_last4: str = ""
     balances: list[BalanceLine]
+    notice: str | None = None
 
 
 class BalancesResult(BaseModel):
@@ -107,9 +112,15 @@ class Transaction(BaseModel):
 class AccountTransactions(BaseModel):
     account: str
     iban_last4: str = ""
-    pages: int = Field(description="How many Enable Banking pages were followed.")
-    count: int
+    pages: int = Field(description="How many Enable Banking pages were followed for this range. A cache hit reuses the earlier count.")
+    matched: int = Field(description="Rows in the range after the search filter, before limit and offset.")
+    returned: int
+    count: int = Field(description="Same as returned. Kept so older clients still see a count.")
+    offset: int
+    limit: int
+    truncated: bool = Field(description="True when matched rows remain after this page.")
     transactions: list[Transaction]
+    notice: str | None = None
 
 
 class TransactionsResult(BaseModel):
@@ -142,6 +153,7 @@ class RecurringResult(BaseModel):
     currency: str = ""
     as_of: str
     owner_only: str
+    notice: str | None = None
 
 
 class ConsentResult(BaseModel):
@@ -173,10 +185,10 @@ def _warning(status, warn_days):
     if state == "renew_soon":
         return (
             f"WARNING: consent expires within {warn_days} days "
-            f"({status.get('valid_until')}). Renew with `eb.py auth` and approve again in your bank app."
+            f"({status.get('valid_until')}). Renew with `n26-eb connect` and approve again in your bank app."
         )
     if state == "expired":
-        return "EXPIRED: consent has ended. Run `eb.py auth`, approve in your bank app, then `eb.py session <url>`."
+        return "EXPIRED: consent has ended. Run `n26-eb connect`, approve in your bank app, then paste the redirect URL."
     if state == "unknown":
         return "No consent expiry on the session file."
     return None
@@ -219,6 +231,7 @@ def get_balances(
                     account=block["account"],
                     iban_last4=block["iban_last4"],
                     balances=[BalanceLine(**line) for line in block["balances"]],
+                    notice=block.get("notice"),
                 )
                 for block in blocks
             ],
@@ -231,28 +244,38 @@ def get_transactions(
     date_from: Annotated[str, Field(description="Start date, inclusive, YYYY-MM-DD.")],
     date_to: Annotated[str | None, Field(description="End date, inclusive, YYYY-MM-DD. Omit to leave the end open.")] = None,
     account: Annotated[str | None, Field(description="Account uid from list_accounts. Omit for every consented account.")] = None,
+    search: Annotated[str | None, Field(description="Case-insensitive text match on payee (creditor or debtor) or remittance.")] = None,
+    limit: Annotated[int, Field(ge=1, le=200, description="How many matching rows to return, newest first. Default 50. Maximum 200.")] = 50,
+    offset: Annotated[int, Field(ge=0, description="How many matching rows to skip. Use with limit to page.")] = 0,
 ) -> TransactionsResult:
     """Read-only transactions for a date range.
 
-    Follows Enable Banking continuation pages until the range is complete and
-    returns one combined list per account. Debits are negative amounts with
-    direction DBIT. There is no payment action. Show the result only to the account owner.
+    Follows Enable Banking continuation pages, then returns the newest matching
+    rows only (default 50, maximum 200) so a long history does not fill the
+    context. Filter with search, or narrow date_from and date_to. For a summary,
+    use recurring_charges or the monthly spending resource instead of raising
+    the limit. Debits are negative amounts with direction DBIT. There is no
+    payment action. Show the result only to the account owner.
     """
     with _guard():
         blocks = eb.fetch_transactions(eb.load_session(), date_from, date_to, account, required=True)
-        return TransactionsResult(
-            accounts=[
-                AccountTransactions(
-                    account=block["account"],
-                    iban_last4=block["iban_last4"],
-                    pages=block["pages"],
-                    count=len(block["transactions"]),
-                    transactions=[Transaction(**row) for row in block["transactions"]],
-                )
-                for block in blocks
-            ],
-            owner_only=OWNER_ONLY,
-        )
+        accounts = []
+        for block in blocks:
+            page = eb.select_transactions(block["transactions"], search=search, limit=limit, offset=offset)
+            accounts.append(AccountTransactions(
+                account=block["account"],
+                iban_last4=block["iban_last4"],
+                pages=block["pages"],
+                matched=page["matched"],
+                returned=page["returned"],
+                count=page["returned"],
+                offset=page["offset"],
+                limit=page["limit"],
+                truncated=page["truncated"],
+                transactions=[Transaction(**row) for row in page["transactions"]],
+                notice=block.get("notice"),
+            ))
+        return TransactionsResult(accounts=accounts, owner_only=OWNER_ONLY)
 
 
 @mcp.tool(title="Recurring charges", annotations=_read_only(local=False))
@@ -282,7 +305,8 @@ def recurring_charges(
         blocks = eb.fetch_transactions(eb.load_session(), date_from, date_to, account, required=True)
         rows = eb.rows_from_flat([row for block in blocks for row in block["transactions"]])
         found = eb.detect_recurring(rows, today=as_of, include_credits=include_credits, min_count=min_count)
-        return RecurringResult(**found, owner_only=OWNER_ONLY)
+        notices = [block["notice"] for block in blocks if block.get("notice")]
+        return RecurringResult(**found, owner_only=OWNER_ONLY, notice=notices[0] if notices else None)
 
 
 @mcp.tool(title="Consent status", annotations=_read_only(local=False))
@@ -294,7 +318,7 @@ def consent_status(
 
     N26 consents last at most 180 days. state is ok, renew_soon, expired or
     unknown. This does not renew the consent and cannot move money. Renew with
-    the eb.py CLI. Show the result only to the account owner.
+    `n26-eb connect`. Show the result only to the account owner.
     """
     with _guard():
         session = eb.load_session()
